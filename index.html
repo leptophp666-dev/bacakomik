@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Komik JPG Vertical Paging</title>
+
+<style>
+html, body {
+    margin: 0;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+}
+
+/* header */
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #111;
+    padding: 8px;
+    z-index: 10;
+    color: white;
+}
+
+/* viewer vertikal */
+#viewer {
+    margin-top: 50px;
+    height: calc(100vh - 50px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-snap-type: y mandatory;
+}
+
+/* satu halaman layar */
+.page {
+    height: calc(100vh - 50px);
+    scroll-snap-align: start;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* gambar */
+img {
+    width: 100%;
+    max-width: 480px;   /* ukuran nyaman HP & PC */
+    height: auto;
+}
+.page {
+    padding: 10px 0;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <input type="file" webkitdirectory multiple id="folderInput">
+</header>
+
+<div id="viewer"></div>
+
+<script>
+document.getElementById("folderInput").addEventListener("change", function () {
+    const files = Array.from(this.files)
+        .filter(f => f.type.startsWith("image/"))
+        .sort((a, b) => {
+            const na = parseInt(a.name.match(/\d+/));
+            const nb = parseInt(b.name.match(/\d+/));
+            return na - nb;
+        });
+
+    const viewer = document.getElementById("viewer");
+    viewer.innerHTML = "";
+
+    files.forEach(file => {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+
+        const page = document.createElement("div");
+        page.className = "page";
+        page.appendChild(img);
+
+        viewer.appendChild(page);
+    });
+});
+</script>
+
+</body>
+</html>
